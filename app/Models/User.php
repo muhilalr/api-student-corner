@@ -3,14 +3,17 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasApiTokens, Notifiable;
+
+    protected $table = 'users';
 
     /**
      * The attributes that are mass assignable.
@@ -20,7 +23,16 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'jenis_kelamin',
+        'no_hp',
+        'instansi',
+        'foto',
         'password',
+        'otp_code',
+        'otp_expires_at',
+        'is_verified',
+        'pending_email',
+        'slug',
     ];
 
     /**
@@ -31,6 +43,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'otp_code',
     ];
 
     /**
@@ -41,8 +54,21 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'otp_expires_at' => 'datetime',
+            'is_verified'    => 'boolean',
+            'password'       => 'hashed',
         ];
+    }
+
+    // Auto-generate slug dari name
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($user) {
+            if (empty($user->slug)) {
+                $user->slug = Str::slug($user->name) . '-' . Str::random(6);
+            }
+        });
     }
 }
