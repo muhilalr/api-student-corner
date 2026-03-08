@@ -49,6 +49,17 @@ class AuthController extends Controller
             'no_hp'         => ['required', 'string', 'max:20'],
             'instansi'      => ['required', 'string', 'max:255'],
             'foto'          => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+        ], [
+            'name.required' => 'Nama wajib diisi.',
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'email.unique' => 'Email sudah terdaftar.',
+            'jenis_kelamin.required' => 'Jenis kelamin wajib dipilih.',
+            'jenis_kelamin.in' => 'Jenis kelamin tidak valid.',
+            'password.required' => 'Password wajib diisi.',
+            'password.confirmed' => 'Konfirmasi password tidak cocok.',
+            'instansi.required' => 'Instansi wajib diisi.',
+            'no_hp.required' => 'Nomor HP wajib diisi.',
         ]);
 
         // Upload foto jika ada
